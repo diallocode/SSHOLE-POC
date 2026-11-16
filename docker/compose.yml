@@ -1,0 +1,20 @@
+services:
+  sshd:
+    build: .
+    volumes:
+      - ./lab.pub:/run/lab.pub:ro
+      - ./config/sshd_config:/etc/ssh/sshd_config:ro
+    networks:
+      - lab
+
+  client:
+    build: .
+    profiles: ["test"]
+    volumes:
+      - ./lab_key:/run/lab_key:ro
+    networks:
+      - lab
+
+networks:
+  lab:
+    internal: true 
