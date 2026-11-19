@@ -1,20 +1,16 @@
 services:
   sshd:
-    build: .
+    build:
+      context: .
+      args:
+        ALPINE_VERSION: "3.19"
+        OPENSSH_VERSION: "9.6p1"
+    image: ssh-lab:7.7p1
     volumes:
-      - ./lab.pub:/run/lab.pub:ro
       - ./config/sshd_config:/etc/ssh/sshd_config:ro
-    networks:
-      - lab
-
-  client:
-    build: .
-    profiles: ["test"]
-    volumes:
-      - ./lab_key:/run/lab_key:ro
     networks:
       - lab
 
 networks:
   lab:
-    internal: true 
+    internal: true
