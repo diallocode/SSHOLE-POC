@@ -32,13 +32,14 @@
         state: present
         update_cache: true
 
-    - name: Installer Docker et Compose
+    - name: Installer Docker, Compose et le client SSH
       ansible.builtin.apt:
         name:
           - docker-ce
           - docker-ce-cli
           - containerd.io
           - docker-compose-plugin
+          - openssh-client
         state: present
 
     - name: Activer et demarrer Docker
@@ -52,3 +53,9 @@
         name: vagrant
         groups: docker
         append: true
+
+    - name: Construction et demarrage du conteneur sshd
+      ansible.builtin.command:
+        cmd: docker compose up -d --build sshd
+        chdir: /vagrant/docker
+      changed_when: true
