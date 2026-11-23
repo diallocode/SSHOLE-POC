@@ -52,24 +52,27 @@ Docker est utilisé dans la VM de laboratoire. Il n’est pas nécessaire de l�
 
 Suivez ces étapes dans l'ordre pour déployer l'environnement :
 
-### 1. Cloner le dépôt
+### 1 Cloner le dépôt
 ```bash
 git clone [https://github.com/](https://github.com/)diallocode/SSHOLE-POC.git
 cd /SSHOLE-POC
 ```
 
-### 1.  Accéder au répertoire Docker
+### 1.2  Accéder au répertoire Docker 
+Cette etape vous permet de demarrer le conteneur directement sur votre propre machine, si vous voulez utilisez une vm avec vagrant, passer a l'etape suivante.
 ```bash
 cd /SSHOLE-POC/docker
 docker compose up --build -d
 ```
-### Demarrage sous vagrant
-#### 1. Démarrer l'environnement Vagrant
+### 1.3 Demarrage sous vagrant (optionnel)
+Vous permet d'avoir un environement isole avec un vm dans laquelle va tourner le container. Si vous avez fait l'option `1.2`, passez directement a l'etape `2` sinon continuez.
+#### 1.3.1 Démarrer l'environnement Vagrant
 ```bash
 vagrant up
 ```
+vagrant vous met en place automatiquement tout l'environement, ainsi que docker.
 
-#### 2. Se connecter à la VM et accéder au répertoire Docker
+#### 1.3.2 Se connecter à la VM et accéder au répertoire Docker
 ```bash
 vagrant ssh
 cd /vagrant/docker
