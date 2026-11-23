@@ -10,7 +10,7 @@ SSHole résulte d’une interaction entre `sshd` et la fonction `crypt()` de mus
 
 Ce dépôt fournit un environnement reproductible basé sur :
 
-- **Vagrant**, pour démarrer la machine virtuelle de laboratoire ;
+- **Vagrant**, pour démarrer la machine virtuelle de laboratoire (optionnelle);
 - **Docker Compose**, pour exécuter la cible isolée ;
 - **Alpine Linux 3.19** et **musl libc** ;
 - **OpenSSH 9.6p1**, dans une révision non corrigée.
@@ -41,11 +41,11 @@ La chaîne envoyée comme mot de passe doit mesurer **257 à 1 024 octets**. Le 
 Sur la machine hôte :
 
 - Git ;
-- Vagrant ;
+- Vagrant (optionel);
 - le fournisseur de virtualisation configuré dans le `Vagrantfile` (ici VMware) ;
 - suffisamment de mémoire et d’espace disque pour démarrer la VM.
 
-`Docker` est utilisé dans la VM de laboratoire. Il n’est pas nécessaire de l’installer sur l’hôte, le provisionnement Vagrant l’installe déjà.
+Docker est utilisé dans la VM de laboratoire. Il n’est pas nécessaire de l’installer sur l’hôte, le provisionnement Vagrant l’installe déjà.
 ---
 
 ## Installation et Lancement du Laboratoire
@@ -58,18 +58,24 @@ git clone [https://github.com/](https://github.com/)diallocode/SSHOLE-POC.git
 cd /SSHOLE-POC
 ```
 
-### 2. Démarrer l'environnement Vagrant
+### 1.  Accéder au répertoire Docker
+```bash
+cd /SSHOLE-POC/docker
+docker compose up --build -d
+```
+### Demarrage sous vagrant
+#### 1. Démarrer l'environnement Vagrant
 ```bash
 vagrant up
 ```
 
-### 3. Se connecter à la VM et accéder au répertoire Docker
+#### 2. Se connecter à la VM et accéder au répertoire Docker
 ```bash
 vagrant ssh
 cd /vagrant/docker
 ```
 
-### 4. Vérifier que le conteneur cible est opérationnel
+### 2. Vérifier que le conteneur cible est opérationnel
 ```bash 
 docker ps
 ```
@@ -105,16 +111,16 @@ Confirmez les points suivants :
 
 ### 4. Identifier un compte cible sans mot de passe
 La faille exploite les comptes dont le champ mot de passe dans `/etc/shadow` est `*`, typiquement les comptes configurés pour une authentification par clé uniquement.
-```bash
-cat /etc/shadow
-```
+
 Sur Alpine, root est souvent dans ce cas si aucun mot de passe n'a été défini. Un autre utilisateur non route ayant la meme config est egalement present dans ce fichier pour le test.
+
+Pour notre exemple on a creer expres un compte qui s'appel `Clelie` et mis `PermitRootLogin` a `yes`, vous pouvez utiliser l'un et/ou l'autre pour tester
 
 ### 5. Tenter l'authentification bypass (PoC)
 Depuis la VM, récupérez l’adresse IP du conteneur :
 
 ```bash
-docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' sshole-lab-sshd-1
+docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' docker-sshd-1
 ```
 
 Lancez le client SSH en imposant l’authentification par mot de passe :
